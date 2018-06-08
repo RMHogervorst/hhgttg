@@ -38,13 +38,40 @@ HH1 %>%
     filter(path == "OEBPS/part2_split_001.xhtml" ) %>% 
     pull(content)
 
-HH1 %>% 
-    filter(str_detect(path, "split_001.xhtml")) %>% 
+
+extract_text <-  . %>% 
     mutate(chapter = str_extract(content, "CHAPTER [0-9]{1,3}") %>% 
                str_extract("[0-9]{1,3}") %>% 
                as.integer(),
            content = str_remove(content, "CHAPTER [0-9]{1,3}"),
-           content = str_remove(content, "known\n      Unknown")) %>% 
+           content = str_remove(content, "Unknown\n      Unknown")) %>% 
     arrange(chapter) %>% 
     select(chapter, content)
     
+
+HH1 <- 
+    HH1 %>% 
+    filter(str_detect(path, "split_001.xhtml")) %>% 
+    extract_text()
+
+# does it work for the others too?
+# 
+HH2 <- epub_to_text("data/Adams, Douglas/Restaurant at the End of the Universe, The/Restaurant at the End of the Universe, The - Douglas Adams.epub")
+HH2 %>% 
+    filter(str_detect(path, "split_001.xhtml")) %>% 
+    extract_text()
+# it does not work because the chapter is not in capitals.
+HH2 %>% 
+    filter(path == "OEBPS/part1.xhtml") %>% 
+    pull(content) # well it does throw away this part ... I can accept that.
+    
+HH2 %>% 
+    filter(str_detect(path, "split_001.xhtml")) %>% 
+    mutate(chapter = str_extract(content, "Chapter [0-9]{1,3}") %>% 
+               str_extract("[0-9]{1,3}") %>% 
+               as.integer(),
+           content = str_remove(content, "Chapter [0-9]{1,3}"),
+           content = str_remove(content, "Unknown\n      Unknown")) %>% 
+    arrange(chapter) %>% 
+    select(chapter, content) #%>% 
+    #pull(content) %>% .[1]
