@@ -22,10 +22,11 @@ HH4 <-
     extract_text() 
 
 HHGTTG <- bind_rows(
-    thehitchhikersguide = HH1,
-    restaurantenduniverse = HH2,
-    lifetheuniverseeverything =HH3,
-    solongthanksforthefish = HH4, .id = "book"
+    "Hitchhiker's Guide to the Galaxy" = HH1,
+    "Restaurant at the End of the Universe" = HH2,
+    "Life, the Universe and Everything" =HH3,
+    "So Long, and Thanks for All the Fish" = HH4, 
+    .id = "book"
 )
 
 rm(HH1, HH2, HH3, HH4)
