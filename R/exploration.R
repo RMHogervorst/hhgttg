@@ -98,7 +98,7 @@ HH5 <-
 ## detected?
 HH5$content[11] %>% str_extract_all("[0-9]{1,3}")
 HH5$content[11] %>% str_extract_all("[0-9]{1,3}")
-epub_to_text("data/Adams, Douglas/Mostly Harmless/Mostly Harmless - Douglas Adams.epub") %>% 
+pubcrawl::epub_to_text("data/Adams, Douglas/Mostly Harmless/Mostly Harmless - Douglas Adams.epub") %>% 
     filter(str_detect(path, "part12_split")) %>% 
     pull(content) %>% 
     #str_extract_all("\"Mostly Harmless\"") # just once...

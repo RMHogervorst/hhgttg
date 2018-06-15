@@ -1,0 +1,101 @@
+---
+title: "n-grams"
+author: "Roel M. Hogervorst"
+date: "June 15, 2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+source("R/01_load_data.R")
+library(tidytext)
+library(dplyr)
+library(ggraph)
+library(tidygraph)
+```
+
+
+
+
+```{r}
+HHGTTG_trigrams <- HHGTTG %>%
+  unnest_tokens(trigram, content, token = "ngrams", n = 3) %>%
+  separate(trigram, c("word1", "word2", "word3"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word,
+         !word3 %in% stop_words$word) %>%
+  count(word1, word2, word3, sort = TRUE)
+HHGTTG_trigrams
+```
+
+We can also visualise the biwords.
+
+```{r}
+HHGTTG_bigrams <- HHGTTG %>%
+  unnest_tokens(bigram, content, token = "ngrams", n = 2) %>%
+    count(book, bigram) %>%
+  bind_tf_idf(bigram, book, n) %>% 
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word)
+
+HHGTTG_graph_1 <- HHGTTG_bigrams %>% 
+    filter(book == "Hitchhiker's Guide to the Galaxy") %>% 
+    filter(n > 5) %>%
+    select(word1, word2, book, n:tf_idf) %>% 
+    mutate(book_c = as.factor(book)) %>% 
+    as_tbl_graph()
+ggraph(HHGTTG_graph_1, layout = "fr") +
+    geom_edge_link(aes(edge_width = n^2)) +
+    geom_node_point() +
+    geom_node_text(aes(label = name), vjust = 1, hjust = 1)+
+    theme_void() +
+    ggtitle("Hitchhiker's Guide to the Galaxy")
+HHGTTG_graph_2 <- HHGTTG_bigrams %>% 
+    filter(book == "Restaurant at the End of the Universe") %>% 
+    filter(n > 5) %>%
+    select(word1, word2, book, n:tf_idf) %>% 
+    mutate(book_c = as.factor(book)) %>% 
+    as_tbl_graph()
+ggraph(HHGTTG_graph_2, layout = "fr") +
+    geom_edge_link(aes(edge_width = n^2)) +
+    geom_node_point() +
+    geom_node_text(aes(label = name), vjust = 1, hjust = 1)+
+    theme_void() +
+    ggtitle("Restaurant at the End of the Universe")
+HHGTTG_graph_3 <- HHGTTG_bigrams %>% 
+    filter(book == "Life, the Universe and Everything") %>% 
+    filter(n > 5) %>%
+    select(word1, word2, book, n:tf_idf) %>% 
+    mutate(book_c = as.factor(book)) %>% 
+    as_tbl_graph()
+ggraph(HHGTTG_graph_3, layout = "fr") +
+    geom_edge_link(aes(edge_width = n^2)) +
+    geom_node_point() +
+    geom_node_text(aes(label = name), vjust = 1, hjust = 1)+
+    theme_void()+
+    ggtitle("Life, the Universe and Everything")
+HHGTTG_graph_4 <- HHGTTG_bigrams %>% 
+    filter(book == "So Long, and Thanks for All the Fish") %>% 
+    filter(n > 5) %>%
+    select(word1, word2, book, n:tf_idf) %>% 
+    mutate(book_c = as.factor(book)) %>% 
+    as_tbl_graph()
+ggraph(HHGTTG_graph_4, layout = "fr") +
+    geom_edge_link(aes(edge_width = n^2)) +
+    geom_node_point() +
+    geom_node_text(aes(label = name), vjust = 1, hjust = 1)+
+    theme_void()+
+    ggtitle("So Long, and Thanks for All the Fish")
+```
+
+
+Visualise the word connections
+
+
+

@@ -4,9 +4,6 @@ library(tidyverse)
 
 source("R/utils.R")
 
-
-
-
 HH1 <- 
     pubcrawl::epub_to_text("data/Adams, Douglas/Hitchhiker's Guide to the Galaxy, The/Hitchhiker's Guide to the Galaxy, The - Douglas Adams.epub") %>% 
     extract_TEXT()
